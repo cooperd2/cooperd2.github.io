@@ -1,0 +1,30 @@
+<html>
+<head>
+<style>
+body {
+	padding-top:50px;
+	font-family:Arial, Helvetica, sans-serif;
+}
+#filter-wrapper {
+	width:90%;
+	text-align:right;
+	margin: 0 auto;
+}
+</style>
+</head>
+<body>
+<div id="filter-wrapper">
+    <center>
+        <h1> What is the impact of teaching on the instructors? </h1>
+    </center>
+    <strong>Filter: </strong>
+    <select id="theFilter" onChange="init_with_year()">
+        <option value=" ">Select One</option>
+    </select>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> 
+<script src="impact_of_teaching_on_instructors.js" type="text/javascript"></script>
+<div id="columnchart_values" style="width: 65%; margin:0 auto; height: 550px;"></div>
+</body>
+</html>

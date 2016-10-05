@@ -1,0 +1,288 @@
+<html>
+  <head>
+  <style>
+  body{
+	  padding-top:50px;
+	  font-family:Arial, Helvetica, sans-serif;
+  }
+  #filter-wrapper{
+	  width:90%; 
+	  text-align:right;
+	  margin: 0 auto;
+  }
+  </style>
+  </head>
+  <body>
+  <div id="filter-wrapper">
+  <center>
+  <h1>
+  What is the impact of teaching on the instructors?
+  </h1>
+  <p>&nbsp;</p>
+  </center>
+  
+  
+      <strong>Chart Type: </strong><select id="theFilterType" onChange="init_with_year()">
+  
+  <option value=" ">Select One</option>
+    <option value=" ">Bar</option>
+        <option value="pie">Pie</option>
+                <option value="donut">Donut</option>
+
+            <option value="line">Line</option>
+
+  </select>
+  
+  
+   <strong>Filter: </strong><select id="theFilter" onChange="init_with_year()">
+  
+  <option value=" ">Select One</option>
+
+  </select>
+  
+
+  
+  </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+	
+/*	Understanding of Students
+42%
+59%
+59%
+69%
+70%
+75%
+83%
+*/
+
+
+	
+	//Global Data
+	var data = [
+			
+			{'filter':'Satisfaction with University of South Carolina',
+			  'years':[{'year':'2010','percentage':.65},{'year':'2011','percentage':.70},{'year':'2012','percentage':.80},{'year':'2013','percentage':.85}]},
+			  
+			  {'filter':'Commitment to the Institution',
+			             'years':[{'year':'2010','percentage':.60},{'year':'2011','percentage':.65},{'year':'2012','percentage':.75},{'year':'2013','percentage':.80}]},
+						 
+				 {'filter':'Understanding of Students',
+			              'years':[{'year':'2010','percentage':.42},{'year':'2011','percentage':.59},{'year':'2012','percentage':.59},{'year':'2013','percentage':.69}]}];
+	
+	
+	  function init(){	  
+
+			  $.each(data, function (i,item){
+			   
+			   //Get the filter
+			   var filter = item.filter;
+			   console.log(filter);
+			   
+			   var option = '<option value="' +filter+'">';
+					     option += filter;
+						 option += '</option>';
+						 $('#theFilter').append(option);
+		  
+	  });
+	  
+	  
+	  graph([{c: [{v: ' '}, {v: 0}, {v: "#660000"}]}]);
+	  
+	  }
+	  
+/*******************************************/
+	  function init_with_year(){
+		var selected  = $('#theFilter').find(":selected").val();
+		 
+		 var objs = [];
+		  
+			  
+			  $.each(data, function (i,item){
+			   
+			   //Get the filter
+			   var filter = item.filter;
+			   console.log(filter);
+			  
+						 
+						 
+			   
+			   //Get each year entry
+			   $.each(item.years, function (k,item){
+			    var year = item.year;
+				var percentage = item.percentage;			
+				/*
+				var arr = $.map(item, function(el) { return el });
+				entry_array.push(arr);
+				console.log(arr);
+				*/
+
+				var obj = {c: [{v: year}, {v: percentage}, {v: "#660000"}]}
+			    if(selected == filter){
+				objs.push(obj);
+				}
+			     });
+			  
+			  
+			  });
+			
+			
+			
+			/*			
+			var data = [{'filter':'Made important contributions to our class','year':2015,'avg_mean':4.33},{'filter':'Was approachable','year':2015,'avg_mean':4.45}
+			                ,{'filter':'Was an appropriate role model','year':2015,'avg_mean':4.09},
+							 {'filter':'Was a valuable part of my University 101 experience','year':2015,'avg_mean':4.45},
+							 {'filter':'Helped me make a successful transition to the University','year':2015,'avg_mean':4.67},
+							 {'filter':'was a valuable resource','year':2015,'avg_mean':4.76},
+							 {'filter':'Made important contributions to our class','year':2014,'avg_mean':3.33},{'filter':'Was approachable','year':2015,'avg_mean':3.45}
+			                ,{'filter':'Was an appropriate role model','year':2014,'avg_mean':3.09},
+							 {'filter':'Was a valuable part of my University 101 experience','year':2014,'avg_mean':3.45},
+							 {'filter':'Helped me make a successful transition to the University','year':2014,'avg_mean':3.67},
+							 {'filter':'was a valuable resource','year':2014,'avg_mean':3.76}]
+							 
+				*/
+				
+				
+			/*
+						
+			  $.each(data, function(i, item) {
+				  
+				 item_year = item.year;
+				 
+				 if(item_year == year){
+					 //Then it will become an option in the select menu
+					 var option = '<option value="' +item.avg_mean+'">';
+					     option += item.filter;
+						 option += '</option>';
+				 }
+				 
+				 $('#theFilter').append(option);
+			  
+			  });
+			  
+			  */
+			  
+			  //Rechart
+			  graph(objs);
+			  
+				   }
+	  
+	  
+	  
+      google.charts.load('current', {'packages':['corechart']});
+	  //Initialize the chart options for the current year
+	  google.charts.setOnLoadCallback(init);
+	  //Initialize the graph
+      google.charts.setOnLoadCallback(graph);
+
+    
+      function graph(objs) {
+		  
+		 
+		 var theOption=" ";
+		  
+		 var theValue  = $('#theFilter').find(":selected").val();
+
+		 if(theValue!=" "){
+		
+		   theOption = $('#theFilter').find(":selected").text()+" (" +theValue+ ") ";
+		 }
+		 
+		
+      var data = google.visualization.arrayToDataTable([
+        ["Element", "Percentage", { role: "style" } ],
+        objs[0]]);
+		
+		//Remove the first element of objs
+	    objs.shift();
+	  //Iterate the entry array and add each item to the data object
+	 
+	 //Make the array dynamic
+	  //data.Sf.push([2011, 70, '#660000']);
+	  
+	  			 
+					  $.each(objs, function( index, value ) {
+                          data.Tf.push(value);
+                            });
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title:$('#theFilter').find(":selected").val(),
+        width: '100%',
+        height: 550,
+        bar: {groupWidth: "45%"},
+        legend: { position: "none" },
+		vAxis: { 
+		format:'#%',
+    viewWindowMode:'explicit',
+    viewWindow: {
+        max:1.0,
+        min:0
+    },
+	
+		}
+      };
+	  
+	 var selected  = $('#theFilterType').find(":selected").val();
+	 var chart;
+	 if(selected!=" "){
+	   switch(selected){
+		   case 'line':
+		   chart = new google.visualization.LineChart(document.getElementById("columnchart_values"));
+		   break;
+		   
+		   case 'pie':
+		   chart = new google.visualization.PieChart(document.getElementById("columnchart_values"));
+		   options.legend = 'right';
+		   options.colors =  ['#4d0000', '#660000', '#800000', '#990000','#660000','#cd0000','#e60000','#ff0000'];
+		   break;
+		   
+		   
+		   case 'donut':
+		   chart = new google.visualization.PieChart(document.getElementById("columnchart_values"));
+		   options.legend = 'right';
+		   options.colors =  ['#4d0000', '#660000', '#800000', '#990000','#660000','#cd0000','#e60000','#ff0000'];
+		   options.pieHole = 0.4;
+		   break;
+		   
+		   
+		   case 'bar':
+		   chart = new google.visualization.PieChart(document.getElementById("columnchart_values"));
+		   break;
+		   
+		   
+		   case 'table':
+		   chart = new google.visualization.Table(document.getElementById("columnchart_values"));
+		   break;
+		   
+ 
+	   }
+	   
+	   
+	 }
+	 else{
+	   chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+	   }
+	 
+      //var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+	  
+	  if(selected=='table'){
+		  chart.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+	  }
+	  
+	  else{
+      chart.draw(view, options);
+	  }
+  }
+  </script>
+<div id="columnchart_values" style="width: 65%; margin:0 auto; height: 550px;"></div>
+  </body>
+</html>

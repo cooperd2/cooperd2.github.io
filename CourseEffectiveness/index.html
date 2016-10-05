@@ -1,0 +1,129 @@
+<html>
+  <head>
+  <style>
+  body{
+	  padding-top:50px;
+	  font-family:Arial, Helvetica, sans-serif;
+  }
+  #filter-wrapper{
+	  width:90%; 
+	  text-align:right;
+	  margin: 0 auto;
+  }
+  </style>
+  </head>
+  <body>
+  <div id="filter-wrapper"><strong>Year: </strong><select id="theYearFilter" onChange="init_with_year()">
+  <option value="year-2015">2015</option>
+    <option value="year-2014">2014</option>
+  <option value="year-2013">2013</option>
+
+  </select>
+   <strong>Filter: </strong><select id="theFilter" onChange="graph()">
+  
+  <option value=" ">View All</option>
+  <option value="4.33">
+  Made important contributions to our class
+  </option>
+  
+  <option value="4.45">
+  Was approachable
+  </option>
+  
+  <option value="4.09">
+  Was an appropriate role model
+  </option>
+  
+  <option value="4.45">
+  Was a valuable part of my University 101 experience
+  </option>
+  
+  <option value="4.67">
+  Helped me make a successful transition to the University 
+  </option>
+  
+  <option value="4.76">
+  Was a valuable resource
+  </option>
+  </select></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+	
+	
+	
+	
+	  function init_with_year(){
+		  	var year  = $('#theYearFilter').find(":selected").val();
+			alert(year);
+						
+			var data = [{'filter':'Made important contributions to our class','year':2015,'avg_mean':4.33}
+			                ,{'filter':'Was approachable','year':2015,'avg_mean':4.45},
+							 {'filter':'Was an appropriate role model','year':2015,'avg_mean':4.09}];
+							 
+							
+			  $.each(data, function(i, item) {
+				  
+				 item_year = item.year;
+				 
+				 if(item_year == year){
+					 //Then it will become an option in the select menu
+					 var option = '<option value="' +item.avg_mean+'">';
+					     option += item.filter;
+						 option += '</option>';
+				 }
+				  console.log(item.filter);
+			  
+			  });
+		     
+			 
+	             
+				   }
+	  
+	  
+	  
+      google.charts.load('current', {'packages':['corechart']});
+	  
+      google.charts.setOnLoadCallback(graph,init_with_year);
+
+    
+      function graph() {
+		 
+		 var theOption=" ";
+		  
+		 var theValue  = $('#theFilter').find(":selected").val();
+
+		 if(theValue!=" "){
+		
+		   theOption = $('#theFilter').find(":selected").text()+" (" +theValue+ ") ";
+		 }
+		 
+      var data = google.visualization.arrayToDataTable([
+        ["Element", "Density", { role: "style" } ],
+        ["All of University 101", 4.99, "#600000"],
+        [theOption, theValue, "#b30000"]
+    
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title: "Impact of Peer/Graduate Leaders",
+        width: '100%',
+        height: 400,
+        bar: {groupWidth: "95%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+      chart.draw(view, options);
+  }
+  </script>
+<div id="columnchart_values" style="width: 50%; margin:0 auto; height: 300px;"></div>
+  </body>
+</html>

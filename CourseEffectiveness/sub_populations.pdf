@@ -1,0 +1,315 @@
+<html>
+  <head>
+  <style>
+  body{
+	  padding-top:50px;
+	  font-family:Arial, Helvetica, sans-serif;
+  }
+  #filter-wrapper{
+	  width:90%; 
+	  text-align:right;
+	  margin: 0 auto;
+  }
+  </style>
+  </head>
+  <body>
+  <div id="filter-wrapper">
+  
+        <strong>Chart Type: </strong><select id="theFilterType" onChange="init_with_year()">
+  
+  <option value=" ">Select One</option>
+    <option value=" ">Bar</option>
+        <option value="pie">Pie</option>
+                <option value="donut">Donut</option>
+
+
+  </select>
+  
+  
+   <strong>Filter: </strong><select id="theFilter" onChange="init_with_year()">
+  
+  <option value=" ">Select One</option>
+
+  </select>
+
+
+  
+
+  
+  </div>
+  
+    <div id="filter-wrapper">
+  
+  
+
+  
+  </div>
+  
+  
+  
+    <script   src="http://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+	
+/*	Understanding of Students
+42%
+59%
+59%
+69%
+70%
+75%
+83%
+*/
+
+//Init Charts
+
+	  
+	  
+      google.charts.load('current', {'packages':['corechart']});
+	  //Initialize the chart options for the current year
+	  google.charts.setOnLoadCallback(init);
+	  //Initialize the graph
+     // google.charts.setOnLoadCallback(graph);
+
+
+	
+//Global Data				  
+/*********************************************************************/
+    var mydata = [];
+	
+	var wo_honors_college = {'filter':'Without Honors College','categories':[{'chart':'retention_rate','alias':'Retention Rate','type':'percentage','u101_avg_mean':87,'non_u101_avg_mean':84},{'chart':'graduation_rate','alias':'Graduation Rate','type':'percentage','u101_avg_mean':78,'non_u101_avg_mean':86},{'chart':'first_year_gpa','alias':'First Year GPA','type':'float','u101_avg_mean':3.8,'non_u101_avg_mean':3.3}]};
+						   
+    var pell = {'filter':'Pell Grant','categories':[{'chart':'retention_rate','alias':'Retention Rate','type':'percentage','u101_avg_mean':82,'non_u101_avg_mean':54},{'chart':'graduation_rate','alias':'Graduation Rate','type':'percentage','u101_avg_mean':90,'non_u101_avg_mean':79},{'chart':'first_year_gpa','alias':'First Year GPA','type':'float','u101_avg_mean':3.9,'non_u101_avg_mean':3.3}]};
+		
+	
+		
+		
+		//push the objects
+		//data.push(pell_grant);
+		mydata[0]=wo_honors_college;
+		mydata[1]=pell;
+		
+
+
+	
+/*********************************************************************/
+	
+	
+	  function init(){	  
+
+			  $.each(mydata, function (i,item){
+			   
+			   //Get the filter
+			   var filter = item.filter;
+			   var categories = item.categories;
+			   console.log(filter);
+			   
+			   var option = '<option value="' +filter+'">';
+					     option += filter;
+						 option += '</option>';
+						 $('#theFilter').append(option);
+				
+			 $.each(categories, function (i,item){
+		 
+			  var thechart = '<center><h2>'+item.alias+'</h2></center><div id="'+item.chart+'" style="width: 65%; margin:0 auto; height: 550px;"></div>';
+			             
+						if(!$('#'+item.chart).length){
+						 $('#chart_wrapper').append(thechart);
+						}
+						 
+						 console.log(thechart);
+			 });
+		  
+	  });
+	  
+	  //Dummy Data point
+	  //graph('retention_rate',[{c: [{v: ' '}, {v: 0}, {v: "#660000"}]}]);
+	 // graph('pell_grant',[{c: [{v: ' '}, {v: 0}, {v: "#660000"}]}]);
+
+	  
+	  }
+	  
+/*******************************************************/
+
+	  function init_with_year(){
+		var selected  = $('#theFilter').find(":selected").val();
+		 
+		 var objs = [];
+		 var chart;
+		  
+			  
+			  $.each(mydata, function (i,item){
+				  
+			   
+			   //Get the filter
+			   var filter = String(item.filter);
+			  
+			  			   //Get each category
+			   $.each(item.categories, function (k,item){
+			    target_chart = item.chart;
+				var u101 = item.u101_avg_mean;	
+				var nonu101 = item.non_u101_avg_mean;	
+				
+				 
+				/*
+				var arr = $.map(item, function(el) { return el });
+				entry_array.push(arr);
+				console.log(arr);
+				*/
+                var objects = [];
+				var obj = {c: [{v: "U101 Average Mean"}, {v: u101}, {v: "#660000"}]}
+				var obj2 = {c: [{v: "Non-U101 Average Mean"}, {v: nonu101}, {v: "#660000"}]}
+			   
+			    if(selected == filter){
+				objects.push(obj,obj2);
+				
+				}
+				
+			   graph(target_chart,objects);
+			   
+			   //Clear objs
+
+			     });
+			  
+			  
+			  
+			  });
+			
+	
+			  
+			  //Rechart
+			 // graph(chart,objs);
+			  
+				   }
+	  
+	  
+/*******************************************************/
+    // var:chart is the chart that will be populated with the data:objs
+      function graph(target_chart,objs) {
+		  
+	  
+	  if(objs.length==0){return;}
+		
+      var gdata = google.visualization.arrayToDataTable([
+        ["Element", "Percentage", { role: "style" } ],
+        objs[0]]);
+		
+		
+		//Remove the first element of objs
+	    objs.shift();
+	  //Iterate the entry array and add each item to the data object
+	 
+	 //Make the array dynamic
+	  //data.Sf.push([2011, 70, '#660000']);
+	  
+	  			 
+					  $.each(objs, function( index, value ) {
+                          gdata.Tf.push(value);
+                            });
+
+      var view = new google.visualization.DataView(gdata);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title:$('#theFilter').find(":selected").val()+" (In Percentage) ",
+        width: '100%',
+        height: 550,
+        bar: {groupWidth: "45%"},
+        legend: { position: "none" },
+		vAxis: { 
+		
+    viewWindowMode:'explicit',
+    viewWindow: {
+        max:100,
+        min:0
+    },
+	
+		}
+      };
+	  
+	  
+	 if(target_chart=='first_year_gpa'){
+		 options.title = $('#theFilter').find(":selected").val();
+		 options.vAxis.viewWindow = {
+        max:4.0,
+        min:1.0,
+		format:'.#0.0',
+
+    };
+	 }
+	 var selected  = $('#theFilterType').find(":selected").val();
+	 var chart;
+	 
+	 
+
+     
+	 	 
+	 
+	 if(selected!=" "){
+	   switch(selected){
+		   case 'line':
+		   chart = new google.visualization.LineChart(document.getElementById(target_chart));
+		   break;
+		   
+		   case 'pie':
+		   chart = new google.visualization.PieChart(document.getElementById(target_chart));
+		   options.legend = 'right';
+		   options.colors =  ['#4d0000', '#660000', '#800000', '#990000','#660000','#cd0000','#e60000','#ff0000'];
+		   break;
+		   
+		   
+		   case 'donut':
+		   chart = new google.visualization.PieChart(document.getElementById(target_chart));
+		   options.legend = 'right';
+		   options.colors =  ['#4d0000', '#660000', '#800000', '#990000','#660000','#cd0000','#e60000','#ff0000'];
+		   options.pieHole = 0.4;
+		   break;
+		   
+		   
+		   case 'bar':
+		   chart = new google.visualization.PieChart(document.getElementById(target_chart));
+		   break;
+		   
+		   
+		   case 'table':
+		   chart = new google.visualization.Table(document.getElementById(target_chart));
+		   break;
+		   
+ 
+	   }
+	   
+	   
+	 }
+	 else{
+	   chart = new google.visualization.ColumnChart(document.getElementById(target_chart));
+	   }
+	 
+      //var chart = new google.visualization.ColumnChart(document.getElementById(target_chart));
+	  
+	  if(selected=='table'){
+		  chart.draw(gdata, {showRowNumber: true, width: '100%', height: '100%'});
+	  }
+	  
+	  else{
+      chart.draw(view, options);
+	  }
+	
+  }
+  </script>
+  
+ <div id="chart_wrapper">
+ 
+ </div>
+ 
+ 
+<div id=target_chart style="width: 65%; margin:0 auto; height: 550px;"></div>
+<div id="columnchart_values2" style="width: 65%; margin:0 auto; height: 550px;"></div>
+<div id="columnchart_values3" style="width: 65%; margin:0 auto; height: 550px;"></div>
+
+  </body>
+</html>
